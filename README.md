@@ -1,23 +1,25 @@
-Codes of cryptanalysis of IEAE, more info about the paper can be found [here](https://arxiv.org/abs/1711.01858 ).
+# Cryptanalyzing an image encryption algorithm based on autoblocking and electrocardiography
 
-# Initlization
+Codes of cryptanalysis of image encryption algorithm based on autoblocking and electrocardiography (IEAE), more info about the paper can be found [here](https://arxiv.org/abs/1711.01858).
+
+## Initlization
 ```matlab
 pimg = imread('../../data/Baboon.bmp');
 a=1; b=1; w1=50; w2=50; mu=3.999; mu1=20; mu2=15; N=3; p1=16; p2=16;
 [v, D, C0] = init(pimg, p1, p2, a, b, mu, mu1, mu2);
 ```
 
-# Encryption
+## Encryption
 ```matlab
 cimg = encrypt(pimg, p1, p2, v, D, C0);
 ```
 
-# Decryption
+## Decryption
 ```matlab
 pimg = decrypt(cimg, p1, p2, v, D, C0)
 ```
 
-# Known-plaintext Attack
+## Known-plaintext Attack
 - Encrypt rounds
 
 ```matlab
@@ -40,7 +42,7 @@ end
 [vD, blk_coeff, ~] = get_key(lena, lena_e, p1, p2, T);
 ```
 
-- kpa
+- attack
 
 ```matlab
 aimg = kpa(cimg, vD, blk_coeff);
