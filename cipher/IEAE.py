@@ -38,40 +38,40 @@ class IEAECipher(object):
         self.D = _D
         self.C0 = _C0
 
-    def encipher(self, pimage, p1, p2, v, D, C0):
+    def encipher(self, pimage, p1, p2):
         m, n = np.shape(pimage)
         r1, r2 = m/p1, n/p2
         cimage = np.zeros((m, n))
         for i in xrange(0, r1):
             for j in xrange(0, r2):
                 if i+j == 0:
-                    cimage[0:p1,0:p2] = (pimage[0:p1,0:p2] + v*D[0:p1,0:p2] + C0) % 256
+                    cimage[0:p1,0:p2] = (pimage[0:p1,0:p2] + self.v*self.D[0:p1,0:p2] + self.C0) % 256
                 elif i+j == r1+r2-2:
                     cimage[i*p1:m,j*p2:n] = (pimage[i*p1:m,j*p2:n] + cimage[i*p1:m,(j-1)*p2:n-p2]) % 256
                 elif j == 0:
                     cimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] = (pimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] + \
-                    v*D[i*p1:(i+1)*p1,j*p2:(j+1)*p2] + cimage[(i-1)*p1:i*p1,(r2-1)*p2:r2*p2]) % 256
+                    self.v*self.D[i*p1:(i+1)*p1,j*p2:(j+1)*p2] + cimage[(i-1)*p1:i*p1,(r2-1)*p2:r2*p2]) % 256
                 else:
                     cimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] = (pimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] + \
-                    v*D[i*p1:(i+1)*p1,j*p2:(j+1)*p2] + cimage[i*p1:(i+1)*p1,(j-1)*p2:j*p2]) % 256
+                    self.v*self.D[i*p1:(i+1)*p1,j*p2:(j+1)*p2] + cimage[i*p1:(i+1)*p1,(j-1)*p2:j*p2]) % 256
         return cimage
 
-    def decipher(self, cimage, p1, p2, v, D, C0):
+    def decipher(self, cimage, p1, p2):
         m, n = np.shape(cimage)
         r1, r2 = m/p1, n/p2
         pimage = np.zeros((m, n))
         for i in xrange(0, r1):
             for j in xrange(0, r2):
                 if i+j == 0:
-                    pimage[0:p1,0:p2] = (cimage[0:p1,0:p2] - v*D[0:p1,0:p2] - C0) % 256
+                    pimage[0:p1,0:p2] = (cimage[0:p1,0:p2] - self.v*self.D[0:p1,0:p2] - self.C0) % 256
                 elif i+j == r1+r2-2:
                     pimage[i*p1:m,j*p2:n] = (cimage[i*p1:m,j*p2:n] - cimage[i*p1:m,(j-1)*p2:n-p2]) % 256
                 elif j == 0:
                     pimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] = (cimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] - \
-                    v*D[i*p1:(i+1)*p1,j*p2:(j+1)*p2] - cimage[(i-1)*p1:i*p1,(r2-1)*p2:r2*p2]) % 256
+                    self.v*self.D[i*p1:(i+1)*p1,j*p2:(j+1)*p2] - cimage[(i-1)*p1:i*p1,(r2-1)*p2:r2*p2]) % 256
                 else:
                     pimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] = (cimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] - \
-                    v*D[i*p1:(i+1)*p1,j*p2:(j+1)*p2] - cimage[i*p1:(i+1)*p1,(j-1)*p2:j*p2]) % 256
+                    self.v*self.D[i*p1:(i+1)*p1,j*p2:(j+1)*p2] - cimage[i*p1:(i+1)*p1,(j-1)*p2:j*p2]) % 256
         return pimage
 
     def _rand_str_gen(self, x0, y0, x0_, n, a=1, b=1, mu=3.999):
@@ -104,3 +104,25 @@ class IEAECipher(object):
 
     def _logistic_map(self, x0, mu):
         return mu*x0*(1-x0)
+
+class Cryptanalysis(object):
+    def __init__(self, pimage, cimage, p1, p2, rounds):
+        _m, _n = np.shape(pimage)
+        self.pimage = pimage
+        self.cimage = cimage
+        self.rounds = rounds
+        self.m = _m
+        self.n = _n
+
+    def _get_coeff(self):
+        coeff = np.tri(self.m)
+        for j in xrange(0, self.rounds-1):
+            for i in xrange(1, len(coeff[0]+1)):
+                coeff[i] += coeff[i-1]
+        return coeff
+
+    def _get_vd(self, pimage, cimage, coeff, p1, p2, r1, r2):
+        raise NotImplementedError
+
+    def known_plaintext_attack(self, cimage, v, D, coeff):
+        raise NotImplementedError
