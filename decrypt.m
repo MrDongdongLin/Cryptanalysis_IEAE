@@ -5,7 +5,7 @@ function pimg = decrypt( cimg, p1, p2, v, D, C0 )
 [m, n] = size(cimg);
 r1=m/p1; r2=n/p2;
 vD = v*D;
-bm=r1*ones(1,p1); bn=r2*ones(1,p2);
+bm=p1*ones(1,r1); bn=p2*ones(1,r2);
 pimg = zeros(m, n);
 blk_pimg=mat2cell(pimg, bm, bn);
 blk_cimg=mat2cell(cimg, bm, bn);
