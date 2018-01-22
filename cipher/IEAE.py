@@ -113,16 +113,51 @@ class Cryptanalysis(object):
         self.rounds = rounds
         self.m = _m
         self.n = _n
+        self.p1 = p1
+        self.p2 = p2
 
     def _get_coeff(self):
-        coeff = np.tri(self.m)
+        dim = (self.m/self.p1)*(self.n/self.p2)
+        coeff = np.tri(dim)
         for j in xrange(0, self.rounds-1):
             for i in xrange(1, len(coeff[0]+1)):
                 coeff[i] += coeff[i-1]
         return coeff
 
-    def _get_vd(self, pimage, cimage, coeff, p1, p2, r1, r2):
-        raise NotImplementedError
+    def _get_vd(self, pimage, cimage, coeff):
+        r1 = self.m/self.p1
+        r2 = self.n/self.p2
+        p1 = self.p1
+        p2 = self.p2
+        sa = np.zeros((p1, p2*r1*r2))
+        key = np.zeros((p1*r1,p2*r2))
+        for i in xrange(0,r1*r2):
+            for j in xrange(0,i):
+                _x = np.ceil(np.float(j+1)/r1)
+                _y = j%r2 + 1
+                sa[0:p1,i*p2:(i+1)*p2] = sa[0:p1,i*p2:(i+1)*p2] + \
+                coeff[i,j] * pimage[_x*p1:(_x+1)*p1,_y*p2:(_y+1)*p2]
+        for i in xrange(0,r1):
+            for j in xrange(0,r2):
+                key[i*p1:(i+1)*p1,j*p2:(j+1)*p2] = (cimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] - \
+                sa[0:p1,i*r2+j]) % 256
+        return key
 
-    def known_plaintext_attack(self, cimage, v, D, coeff):
-        raise NotImplementedError
+    def known_plaintext_attack(self, cimage, key, coeff):
+        aimage = np.zeros((self.m,self.n))
+        r1 = self.m/self.p1
+        r2 = self.n/self.p2
+        for i in xrange(0,r1):
+            for j in xrange(0,r2):
+                sb = np.zeros((self.p1,self.p2))
+                if i==0 && j==0:
+                    aimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] = (cimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] - \
+                    key[i*p1:(i+1)*p1,j*p2:(j+1)*p2]) % 256
+                else:
+                    row = i*r2+j
+                    for x in xrange(0,row):
+                        # TODO
+                        sb = sb + coeff[row,x] * aimage[]
+                    aimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] = (cimage[i*p1:(i+1)*p1,j*p2:(j+1)*p2] - \
+                    key[i*p1:(i+1)*p1,j*p2:(j+1)*p2]) % 256
+        return aimage

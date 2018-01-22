@@ -1,4 +1,4 @@
-import IEAE_ as cipher
+import IEAE as cipher
 from matplotlib import pyplot as plt
 
 if __name__ == '__main__':
@@ -12,7 +12,9 @@ if __name__ == '__main__':
     _pimage = crypt.decipher(_cimage, p1, p2)
 
     decrypt = cipher.Cryptanalysis(crypt.pimage, _cimage, p1, p2, rounds)
-    print decrypt._get_coeff()
+    coeff = decrypt._get_coeff()
+    vd = decrypt._get_vd(decrypt.pimage, decrypt.cimage, coeff)
+    aimage = decrypt.known_plaintext_attack(_cimage, key, coeff)
     
     # plt.subplot(131)
     # plt.imshow(crypt.pimage, 'gray')
