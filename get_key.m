@@ -7,7 +7,7 @@ cimg = double(cimg);
 r1=m/p1; r2=n/p2;
 coeff = coeffI(r1*r2, r1*r2, T);
 
-bm=r1*ones(1,p1); bn=r2*ones(1,p2);
+bm=p1*ones(1,r1); bn=p2*ones(1,r2);
 blk_pimg=mat2cell(pimg, bm, bn);
 blk_cimg=mat2cell(cimg, bm, bn);
 bm_coeff=ones(1,r1*r2); bn_coeff=ones(1,r1*r2);
@@ -32,7 +32,7 @@ sA = zeros(1,r1*r2);
 b = ones(1,r1*r2);
 sA = mat2cell(sA, 1, b);
 K = zeros(m, n);
-bm=r1*ones(1,p1); bn=r2*ones(1,p2);
+bm=p1*ones(1,r1); bn=p2*ones(1,r2);
 blk_key=mat2cell(K, bm, bn);
 for i=1:r1*r2
     for j=1:i

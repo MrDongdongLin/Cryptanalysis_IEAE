@@ -7,7 +7,7 @@ cimg = double(cimg);
 aimg = zeros(m,n);
 [r1, r2] = size(vD);
 p1=m/r1; p2=n/r2;
-bm=r1*ones(1,p1); bn=r2*ones(1,p2);
+bm=p1*ones(1,r1); bn=p2*ones(1,r2);
 blk_cimg=mat2cell(cimg, bm, bn);
 blk_aimg=mat2cell(aimg, bm, bn);
 % coeff = cell2mat(blk_coeff);
@@ -16,7 +16,7 @@ blk_aimg=mat2cell(aimg, bm, bn);
 blk_aimg = reshape(blk_aimg', 1, r1*r2);
 for i = 1:r1
     for j = 1:r2
-        sb = zeros(r1,r2);
+        sb = zeros(p1,p2);
         if i==1 && j==1
             blk_aimg{1,(i-1)*r2+j} = mod(blk_cimg{i,j} - vD{i,j}, 256);
         else
@@ -29,7 +29,7 @@ for i = 1:r1
     end
 end
 
-blk_aimg = reshape(blk_aimg, 16, 16)';
+blk_aimg = reshape(blk_aimg, r1, r2)';
 
 aimg = cell2mat(blk_aimg);
 imshow(uint8(mod(aimg,256)));
