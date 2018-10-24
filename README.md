@@ -1,11 +1,11 @@
 # Cryptanalyzing an image encryption algorithm based on autoblocking and electrocardiography
 
-These are codes of the paper "cryptanalysis of image encryption algorithm based on autoblocking and electrocardiography" (IEAE), LaTeX source codes of this paper is https://arxiv.org/abs/1711.01858. Cite this paper:
+The paper "cryptanalysis of image encryption algorithm based on autoblocking and electrocardiography" is now available on IEEE: https://ieeexplore.ieee.org/document/8495009. This project contains codes of this paper, LaTeX source codes of this paper can be downloaded:  https://arxiv.org/abs/1711.01858. Cite this paper:
 
 IEEE format: 
 
 C. Li, D. Lin, J. Lu, F. Hao, "Cryptanalyzing an image encryption algorithm based on autoblocking and electrocardiography,"
-IEEE MultiMedia, arXiv:1711.01858, 2018
+IEEE MultiMedia, arXiv:1711.01858, 2018.
 
 ```bib
 @ARTICLE{Cqli:block:IM18,
@@ -19,7 +19,7 @@ IEEE MultiMedia, arXiv:1711.01858, 2018
 
 ## Getting Started
 
-The matlab codes are complete and executable. To encrypt an image of gray scale, please use `encrypt.m`, and use `decrypt.m` to decrypt a cipher image. The file `get_key.m` is used to get the equivalent key of IEAE with a pair of plain image and cipher image. At last, `kpa.m` is used to decipher IEAE.
+The matlab codes are complete and executable. To encrypt a gray scale image, please use `encrypt.m`, and use `decrypt.m` to decrypt a cipher image. The file `get_key.m` is used to get the equivalent version of the secret key of IEAE with a pair of plain image and cipher image. At last, `kpa.m` is used to decipher IEAE.
 
 ## Initlization
 ```matlab
